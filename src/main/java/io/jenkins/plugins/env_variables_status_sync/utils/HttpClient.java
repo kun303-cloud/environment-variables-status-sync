@@ -2,14 +2,19 @@ package io.jenkins.plugins.env_variables_status_sync.utils;
 
 
 import com.alibaba.fastjson2.JSONObject;
+import hudson.ProxyConfiguration;
 import io.jenkins.plugins.env_variables_status_sync.JobRunListenerSysConfig;
 import io.jenkins.plugins.env_variables_status_sync.enums.HttpMethod;
 import io.jenkins.plugins.env_variables_status_sync.model.HttpHeader;
 import jenkins.model.GlobalConfiguration;
+import jenkins.model.Jenkins;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -35,7 +40,7 @@ public class HttpClient {
         assert sysConfig != null;
         String url = sysConfig.getRequestUrl();
         var method = sysConfig.getRequestMethod();
-        OkHttpClient client = getUnsafeOkHttpClient();
+        OkHttpClient client = createHttpClientWithProxy();
         RequestBody requestBody = null;
         if (method == HttpMethod.GET) {
             String params = convertMapToRequestParam(requestMap);
@@ -62,17 +67,7 @@ public class HttpClient {
         encoderPassword(sysConfig.getHttpHeaders());
     }
 
-    private static OkHttpClient getUnsafeOkHttpClient() throws Exception {
-        try {
-            // Optionally configure other settings (e.g., timeouts)
-            var builder = new OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS);
-            return builder.build();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     private static Request buildRequest(String url, HttpMethod method, List<HttpHeader> headers, RequestBody requestBody) {
         if (null != url && !url.isEmpty()) {
@@ -131,4 +126,34 @@ public class HttpClient {
         return requestParams.toString();
     }
 
+    private static OkHttpClient createHttpClientWithProxy() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS);
+
+        // 获取 Jenkins 的代理配置
+        ProxyConfiguration proxyConfig = Jenkins.get().proxy;
+        if (proxyConfig != null && proxyConfig.name != null) {
+            // 配置代理
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyConfig.name, proxyConfig.port));
+            builder.proxy(proxy);
+
+            // 如果代理需要身份验证，配置认证信息
+            if (proxyConfig.getUserName() != null) {
+                Authenticator proxyAuthenticator = new Authenticator() {
+                    @Override
+                    public Request authenticate(Route route, Response response)  {
+                        String credential = okhttp3.Credentials.basic(proxyConfig.getUserName(), proxyConfig.getPassword());
+                        return response.request().newBuilder()
+                                .header("Proxy-Authorization", credential)
+                                .build();
+                    }
+                };
+                builder.proxyAuthenticator(proxyAuthenticator);
+            }
+        }
+
+        return builder.build();
+    }
 }

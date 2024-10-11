@@ -5,20 +5,8 @@
         <f:entry title="${%requestUrl}" field="requestUrl">
             <f:textbox/>
         </f:entry>
-        <f:entry title="${%requestMethod}" field="requestMethod">
-            <select name="requestMethod">
-                <option value="POST" selected="${instance.requestMethod == 'POST' ? 'true' : null}">
-                    ${%requestMethodPOST}
-                </option>
-                <option value="GET" selected="${instance.requestMethod == 'GET' ? 'true' : null }">
-                    ${%requestMethodGET}
-                </option>
-                <option value="PUT" selected="${instance.requestMethod == 'PUT' ? 'true' : null}">${%requestMethodPUT}
-                </option>
-                <option value="DELETE" selected="${instance.requestMethod == 'DELETE' ? 'true' : null}">
-                    ${%requestMethodDELETE}
-                </option>
-            </select>
+        <f:entry title="${%requestMethod}" field="httpMethod">
+            <f:select />
         </f:entry>
         <f:entry title="${%requestHeader}">
             <f:repeatable var="header" name="httpHeaders" items="${instance.httpHeaders}">

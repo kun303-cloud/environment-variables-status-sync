@@ -1,6 +1,9 @@
 package io.jenkins.plugins.env_variables_status_sync;
 
+import hudson.BulkChange;
 import hudson.Extension;
+import hudson.util.ListBoxModel;
+import io.jenkins.plugins.Messages;
 import io.jenkins.plugins.env_variables_status_sync.enums.HttpMethod;
 import io.jenkins.plugins.env_variables_status_sync.model.HttpHeader;
 import jenkins.model.GlobalConfiguration;
@@ -10,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 import static io.jenkins.plugins.env_variables_status_sync.enums.Constants.*;
@@ -39,21 +43,20 @@ public class JobRunListenerSysConfig extends GlobalConfiguration {
     private HttpMethod requestMethod;
 
 
-
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) {
-        // 从json对象中读取并设置requestUrl
-        requestUrl = json.getString(FORM_KEY_REQUEST_URL);
-        setRequestUrl(requestUrl);
-        // 读取并设置httpHeaders
-        httpHeaders = req.bindJSONToList(HttpHeader.class, json.get(FORM_KEY_REQUEST_HEADERS));
-        setHttpHeaders(httpHeaders);
-        String requestMethodOption = json.getString(FORM_KEY_REQUEST_METHOD);
-        setRequestMethod(HttpMethod.valueOf(requestMethodOption));
-        save(); // 保存配置
-
-
-        return true;  // 配置成功
+        try (BulkChange bc = new BulkChange(this)) {
+            requestUrl = json.getString(FORM_KEY_REQUEST_URL);
+            setRequestUrl(requestUrl);
+            httpHeaders = req.bindJSONToList(HttpHeader.class, json.get(FORM_KEY_REQUEST_HEADERS));
+            setHttpHeaders(httpHeaders);
+            String httpMethod = json.getString(FORM_KEY_REQUEST_METHOD);
+            setRequestMethod(HttpMethod.valueOf(httpMethod));
+            bc.commit();
+        }catch (IOException e){
+             throw new IllegalArgumentException(Messages.JobRunListenerSysConfig_abort_errors());
+        }
+        return true;
     }
 
     public void setRequestUrl(String requestUrl) {
@@ -72,5 +75,16 @@ public class JobRunListenerSysConfig extends GlobalConfiguration {
         save();
     }
 
+    public ListBoxModel doFillHttpMethodItems() {
+        ListBoxModel items = new ListBoxModel();
+        if (requestMethod == null) {
+            requestMethod = HttpMethod.POST;  // 默认选择 POST 方法
+        }
+        for (HttpMethod method : HttpMethod.values()) {
+            boolean isSelected = method.name().equals(requestMethod.name());
+            items.add(new ListBoxModel.Option(method.name(), method.name(), isSelected));
+        }
+        return items;
+    }
 
 }

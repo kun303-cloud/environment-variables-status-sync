@@ -14,6 +14,7 @@ import io.jenkins.plugins.Messages;
 import io.jenkins.plugins.env_variables_status_sync.enums.JobStatus;
 import io.jenkins.plugins.env_variables_status_sync.utils.HttpClient;
 import io.jenkins.plugins.env_variables_status_sync.utils.Utils;
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,7 @@ public class NotificationStep extends Builder implements SimpleBuildStep {
         envVar.put(NOTIFY_CONTENT, body);
         log.info("Pipeline Status Notification send notify values : {}",envVar);
         try {
+
             HttpClient.executeRequest(envVar);
         } catch (Exception e) {
             listener.getLogger().println("Pipeline Status Notification send notify error : "+e.getMessage());
