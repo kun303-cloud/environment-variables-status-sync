@@ -40,7 +40,7 @@
     </scm>
 
     <properties>
-        <revision>1.07</revision>
+        <revision>1.0.0</revision>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <jenkins.version>2.440.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
