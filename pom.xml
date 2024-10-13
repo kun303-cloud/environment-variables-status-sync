@@ -11,7 +11,7 @@
 
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>environment-variables-status-sync</artifactId>
-  <version>${revision}</version>
+  <version>${changelist}</version>
   <packaging>hpi</packaging>
 
   <name>Job Environment Variables Status Sync</name>
@@ -38,12 +38,10 @@
     </scm>
 
   <properties>
-    <revision>1.0.0-SNAPSHOT</revision>
+    <changelist>999999-SNAPSHOT</changelist>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <jenkins.version>2.440.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-
-    <spotless.check.skip>false</spotless.check.skip>
     <fastjson2.version>2.0.51</fastjson2.version>
   </properties>
 
