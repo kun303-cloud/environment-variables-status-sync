@@ -9,16 +9,14 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * Date:2024/9/14
  * Time:11:39
  */
-
-
 @Data
 @ToString
 public class HttpHeader {
 
     @SuppressWarnings("lgtm[jenkins/plaintext-storage]")
-    private  String headerKey;
-    private  String headerValue;
+    private String headerKey;
 
+    private String headerValue;
 
     @DataBoundConstructor
     public HttpHeader(String headerKey, String headerValue) {

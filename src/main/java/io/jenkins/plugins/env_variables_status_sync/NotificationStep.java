@@ -1,5 +1,8 @@
 package io.jenkins.plugins.env_variables_status_sync;
 
+import static io.jenkins.plugins.env_variables_status_sync.enums.Constants.NOTIFY_CONTENT;
+import static io.jenkins.plugins.env_variables_status_sync.enums.Constants.STEP_NAME;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -14,17 +17,12 @@ import io.jenkins.plugins.Messages;
 import io.jenkins.plugins.env_variables_status_sync.enums.JobStatus;
 import io.jenkins.plugins.env_variables_status_sync.utils.HttpClient;
 import io.jenkins.plugins.env_variables_status_sync.utils.Utils;
-import jenkins.model.Jenkins;
+import java.io.IOException;
 import jenkins.tasks.SimpleBuildStep;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import java.io.IOException;
-
-import static io.jenkins.plugins.env_variables_status_sync.enums.Constants.NOTIFY_CONTENT;
-import static io.jenkins.plugins.env_variables_status_sync.enums.Constants.STEP_NAME;
 
 /**
  * Author: kun.tang@daocloud.io
@@ -43,18 +41,23 @@ public class NotificationStep extends Builder implements SimpleBuildStep {
     }
 
     @Override
-    public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
+    public void perform(
+            @NonNull Run<?, ?> run,
+            @NonNull FilePath workspace,
+            @NonNull EnvVars env,
+            @NonNull Launcher launcher,
+            @NonNull TaskListener listener)
+            throws InterruptedException, IOException {
         var envVar = Utils.getEnvVars(run, listener, JobStatus.RUNNING);
         envVar.put(NOTIFY_CONTENT, body);
-        log.info("Pipeline Status Notification send notify values : {}",envVar);
+        log.info("Pipeline Status Notification send notify values : {}", envVar);
         try {
 
             HttpClient.executeRequest(envVar);
         } catch (Exception e) {
-            listener.getLogger().println("Pipeline Status Notification send notify error : "+e.getMessage());
+            listener.getLogger().println("Pipeline Status Notification send notify error : " + e.getMessage());
         }
     }
-
 
     @Symbol(STEP_NAME)
     @Extension
