@@ -11,7 +11,7 @@
 
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>environment-variables-status-sync</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.0</version>
   <packaging>hpi</packaging>
 
   <name>Job Environment Variables Status Sync</name>
@@ -33,7 +33,7 @@
   <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
     <connection>scm:git:https://github.com/jenkinsci/environment-variables-status-sync-plugin</connection>
     <developerConnection>scm:git:https://github.com/jenkinsci/environment-variables-status-sync-plugin.git</developerConnection>
-    <tag>environment-variables-status-sync-1.0.1</tag>
+    <tag>environment-variables-status-sync-1.0.0</tag>
     <url>https://github.com/jenkinsci/environment-variables-status-sync-plugin</url>
   </scm>
 
