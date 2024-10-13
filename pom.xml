@@ -33,10 +33,10 @@
     </developers>
     <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false"
          child.scm.url.inherit.append.path="false">
-        <connection>scm:git:https://github.com/kun303-cloud/environment-variables-status-sync</connection>
-        <developerConnection>scm:git:https://github.com/kun303-cloud/environment-variables-status-sync.git</developerConnection>
+        <connection>scm:git:https://github.com/jenkinsci/environment-variables-status-sync-plugin</connection>
+        <developerConnection>scm:git:https://github.com/jenkinsci/environment-variables-status-sync-plugin.git</developerConnection>
         <tag>main</tag>
-        <url>https://github.com/kun303-cloud/environment-variables-status-sync</url>
+        <url>https://github.com/jenkinsci/environment-variables-status-sync-plugin</url>
     </scm>
 
     <properties>
