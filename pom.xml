@@ -17,9 +17,7 @@
 
     <name>Job Environment Variables Status Sync</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <description>Empowers third-party systems to seamlessly access real-time environment variables and execution status
-        of Jenkins jobs.
-    </description>
+    <description>Empowers third-party systems to seamlessly access real-time environment variables and execution status of Jenkins jobs.</description>
     <licenses>
         <license>
             <name>MIT License</name>
@@ -36,8 +34,7 @@
     <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false"
          child.scm.url.inherit.append.path="false">
         <connection>scm:git:https://github.com/kun303-cloud/environment-variables-status-sync</connection>
-        <developerConnection>scm:git:https://github.com/kun303-cloud/environment-variables-status-sync.git
-        </developerConnection>
+        <developerConnection>scm:git:https://github.com/kun303-cloud/environment-variables-status-sync.git</developerConnection>
         <tag>main</tag>
         <url>https://github.com/kun303-cloud/environment-variables-status-sync</url>
     </scm>
