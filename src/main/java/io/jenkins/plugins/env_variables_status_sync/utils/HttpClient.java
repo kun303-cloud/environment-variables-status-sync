@@ -1,17 +1,13 @@
 package io.jenkins.plugins.env_variables_status_sync.utils;
 
+import static io.jenkins.plugins.env_variables_status_sync.utils.Utils.decoderPassword;
+import static io.jenkins.plugins.env_variables_status_sync.utils.Utils.encoderPassword;
 
 import com.alibaba.fastjson2.JSONObject;
 import hudson.ProxyConfiguration;
 import io.jenkins.plugins.env_variables_status_sync.JobRunListenerSysConfig;
 import io.jenkins.plugins.env_variables_status_sync.enums.HttpMethod;
 import io.jenkins.plugins.env_variables_status_sync.model.HttpHeader;
-import jenkins.model.GlobalConfiguration;
-import jenkins.model.Jenkins;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -21,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import static io.jenkins.plugins.env_variables_status_sync.utils.Utils.decoderPassword;
-import static io.jenkins.plugins.env_variables_status_sync.utils.Utils.encoderPassword;
-
+import jenkins.model.GlobalConfiguration;
+import jenkins.model.Jenkins;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 
 /**
  * Author: kun.tang@daocloud.io
@@ -33,7 +29,6 @@ import static io.jenkins.plugins.env_variables_status_sync.utils.Utils.encoderPa
  */
 @Slf4j
 public class HttpClient {
-
 
     public static void executeRequest(Map<String, String> requestMap) throws Exception {
         var sysConfig = GlobalConfiguration.all().get(JobRunListenerSysConfig.class);
@@ -67,9 +62,8 @@ public class HttpClient {
         encoderPassword(sysConfig.getHttpHeaders());
     }
 
-
-
-    private static Request buildRequest(String url, HttpMethod method, List<HttpHeader> headers, RequestBody requestBody) {
+    private static Request buildRequest(
+            String url, HttpMethod method, List<HttpHeader> headers, RequestBody requestBody) {
         if (null != url && !url.isEmpty()) {
             Request.Builder requestBuilder = new Request.Builder().url(url);
             // 根据 HttpMethod 枚举设置请求方式
@@ -104,7 +98,6 @@ public class HttpClient {
         }
         return null;
     }
-
 
     private static String convertMapToRequestParam(Map<String, String> requestMap) throws UnsupportedEncodingException {
         StringBuilder requestParams = new StringBuilder();
@@ -143,9 +136,11 @@ public class HttpClient {
             if (proxyConfig.getUserName() != null) {
                 Authenticator proxyAuthenticator = new Authenticator() {
                     @Override
-                    public Request authenticate(Route route, Response response)  {
-                        String credential = okhttp3.Credentials.basic(proxyConfig.getUserName(), proxyConfig.getPassword());
-                        return response.request().newBuilder()
+                    public Request authenticate(Route route, Response response) {
+                        String credential =
+                                okhttp3.Credentials.basic(proxyConfig.getUserName(), proxyConfig.getPassword());
+                        return response.request()
+                                .newBuilder()
                                 .header("Proxy-Authorization", credential)
                                 .build();
                     }

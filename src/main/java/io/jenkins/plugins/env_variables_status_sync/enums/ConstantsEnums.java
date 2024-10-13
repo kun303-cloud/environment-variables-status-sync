@@ -8,7 +8,6 @@ import lombok.Getter;
  * Date:2024/9/21
  * Time:18:54
  */
-
 @Getter
 @AllArgsConstructor
 public enum ConstantsEnums {
